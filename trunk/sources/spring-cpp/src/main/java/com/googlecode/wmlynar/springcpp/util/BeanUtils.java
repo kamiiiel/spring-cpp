@@ -15,6 +15,7 @@ public class BeanUtils {
      * 
      * @param id
      *            Id of the bean as defined in the context file.
+     * 
      * @return The name of the bean getter name in the BeanFactory class.
      */
     public static String getBeanGetterName(String id) {
@@ -34,7 +35,8 @@ public class BeanUtils {
      * 
      * @param name
      *            Name of the property.
-     * @return The name of the property getter.
+     * 
+     * @return The name of the property setter.
      */
     public static String getPropertySetterName(String name) {
         if (name == null) {
