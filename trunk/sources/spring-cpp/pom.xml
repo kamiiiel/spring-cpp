@@ -124,7 +124,7 @@
                     <fileVersion>0.0.0.0</fileVersion>
                     <txtFileVersion>${version}</txtFileVersion>
                     <fileDescription>spring-cpp dependency injection framework</fileDescription>
-                    <copyright>woj (wmlynar@gmail.com), ...</copyright>
+                    <copyright>Wojciech Mlynarczyk (wmlynar@gmail.com), ...</copyright>
                     <productVersion>0.0.0.0</productVersion>
                     <txtProductVersion>${version}</txtProductVersion>
                     <productName>${artifactId}</productName>
