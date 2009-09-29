@@ -317,8 +317,23 @@ public class BeanFactoryGenerator {
     private String generateConstructor(final Bean bean) {
         final StringBuilder source = new StringBuilder();
 
-        source.append(definition.getNewOperator());
-        source.append(" " + bean.getClazz() + "(");
+        if (bean.getFactoryMethod() == null) {
+            source.append(definition.getNewOperator());
+            source.append(" " + bean.getClazz() + "(");
+        } else {
+            if (bean.getFactoryBean() != null) {
+                final Bean factoryBean = definition.findBeanById(bean
+                        .getFactoryBean());
+                if (factoryBean == null) {
+                    throw new RuntimeException("Cannot find factory bean "
+                            + bean.getFactoryBean());
+                }
+                source.append(factoryBean.getGetterName() + "()->");
+            } else {
+                source.append(bean.getClazz() + "::");
+            }
+            source.append(bean.getFactoryMethod() + "(");
+        }
 
         final int len = bean.getConstructorArgs().size();
         for (int i = 0; i < len; i++) {

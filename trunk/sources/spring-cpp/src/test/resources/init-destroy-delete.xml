@@ -10,5 +10,14 @@
   <bean id="myComp4" class="MyComponent4" destroy-method="destroy" />
 
   <bean id="myComp5" class="MyComponent5" delete-method="deleteMethod" managed="true"/>
+
+  <bean id="myComp6" class="MyComponent6" factory-method="factoryMethod">
+    <constructor-arg ref="myComp1" />
+  </bean>
+
+  <bean id="myComp7" class="MyComponent7" factory-method="factoryMethod" factory-bean="myComp6">
+    <constructor-arg ref="myComp1" />
+  </bean>
+  
   
 </beans>
