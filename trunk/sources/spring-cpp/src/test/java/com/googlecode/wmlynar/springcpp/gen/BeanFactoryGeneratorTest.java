@@ -32,8 +32,19 @@ public class BeanFactoryGeneratorTest extends TestCase {
         final BeanFactoryGenerator gen = new BeanFactoryGenerator();
         final GeneratedClass res = gen.generate(d, "woj", "BeanFactory");
 
+        // System.out.println(res.getHeaderContent());
+        // System.out.println(res.getSourceContent());
+    }
+
+    public void testInitDestoryDelete() throws IOException, SAXException {
+        final BeansXmlReader r = new BeansXmlReader();
+        final BeansDefinition d = r
+                .read("src/test/resources/init-destroy-delete.xml");
+
+        final BeanFactoryGenerator gen = new BeanFactoryGenerator();
+        final GeneratedClass res = gen.generate(d, "woj", "BeanFactory");
+
         System.out.println(res.getHeaderContent());
         System.out.println(res.getSourceContent());
     }
-
 }

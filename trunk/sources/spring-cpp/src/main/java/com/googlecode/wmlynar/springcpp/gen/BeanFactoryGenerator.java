@@ -218,9 +218,28 @@ public class BeanFactoryGenerator {
     private String generateStartStop() {
         final StringBuilder source = new StringBuilder();
 
+        // start method
         source.append("void " + className + "::start()\n{\n");
+        for (final Bean bean : definition.getBeanList()) {
+            if (bean.isLazyInit()) {
+                source.append("  // ignored starting " + bean.getId() + "\n");
+            } else {
+                source.append("  " + bean.getGetterName() + "();\n");
+            }
+        }
         source.append("}\n\n");
+
+        // stop method
         source.append("void " + className + "::stop()\n{\n");
+        for (final Bean bean : definition.getBeanList()) {
+            if (bean.getDestoryMethod() == null) {
+                source.append("  // ignored stopping " + bean.getId() + "\n");
+            } else {
+                source.append("  if(" + bean.getId() + ") ");
+                source.append(bean.getId());
+                source.append("->" + bean.getDestoryMethod() + "();\n");
+            }
+        }
         source.append("}\n\n");
 
         return source.toString();
@@ -238,10 +257,15 @@ public class BeanFactoryGenerator {
         for (final Bean bean : definition.getBeanList()) {
             if (bean.isManaged()) {
                 source.append("  if(" + bean.getId() + ") ");
-                source.append(definition.getDeleteOperator());
-                source.append(" " + bean.getId() + ";\n");
+                if (bean.getDeleteMethod() != null) {
+                    source.append(" " + bean.getId());
+                    source.append("->" + bean.getDeleteMethod() + "();\n");
+                } else {
+                    source.append(definition.getDeleteOperator());
+                    source.append(" " + bean.getId() + ";\n");
+                }
             } else {
-                source.append("  // ignored " + bean.getId() + "\n");
+                source.append("  // ignored deleting " + bean.getId() + "\n");
             }
         }
         source.append("}\n\n");
@@ -269,6 +293,10 @@ public class BeanFactoryGenerator {
         source.append(";\n");
         for (final Property p : bean.getProperties()) {
             generateSetProperty(source, bean, p);
+        }
+        if (bean.getInitMethod() != null) {
+            source.append("    " + bean.getId() + "->" + bean.getInitMethod()
+                    + "();\n");
         }
         source.append("  }\n");
         source.append("  return " + bean.getId() + ";\n");

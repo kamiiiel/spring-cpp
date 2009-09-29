@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans default-use-setter="false">
   
-  <additionalIncludeFile name="someFile.h" /> 
+  <additional-include-file name="someFile.h" /> 
 
-  <bean id="myComp1" class="MyComponent1" includeFile="mycomponent1.h"
+  <bean id="myComp1" class="MyComponent1" include-file="mycomponent1.h"
       use-setter="true">
     <property name="myComp2" ref="myComp2" />
   </bean>
   
-  <bean id="myComp2" class="MyComponent2" includeFile="mycomponent2.h"
+  <bean id="myComp2" class="MyComponent2" include-file="mycomponent2.h"
       use-setter="true">
     <property name="text" value="mytext" text="true" use-setter="false"/>
     <property name="int" value="10" />
@@ -16,11 +16,11 @@
     <constructor-arg value="true" />
   </bean>
   
-  <bean id="myComp3" class="MyComponent3" includeFile="mycomponent3.h">
+  <bean id="myComp3" class="MyComponent3" include-file="mycomponent3.h">
     <constructor-arg ref="myComp1" />
   </bean>
 
-  <bean id="myComponent4" class="MyComponent4" includeFile="mycomponent4.h">
+  <bean id="myComponent4" class="MyComponent4" include-file="mycomponent4.h">
     <property name="int" value="10" use-setter="true"/>
   </bean>
   
