@@ -15,25 +15,20 @@ public class Property {
 
     private boolean useSetter = true;
 
-    public String getGetterName() {
-        final String name1 = name.substring(0, 1).toUpperCase()
-                + name.substring(1);
-        boolean isBoolean = false;
-        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
-            isBoolean = true;
-        }
-        if (ref != null || !isBoolean) {
-            return "get" + name1;
-        } else {
-            return "is" + name1;
-        }
-    }
-
-    public String getSetterName() {
-        final String name1 = name.substring(0, 1).toUpperCase()
-                + name.substring(1);
-        return "set" + name1;
-    }
+    // not needed
+    // public String getGetterName() {
+    // final String name1 = name.substring(0, 1).toUpperCase()
+    // + name.substring(1);
+    // boolean isBoolean = false;
+    // if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+    // isBoolean = true;
+    // }
+    // if (ref != null || !isBoolean) {
+    // return "get" + name1;
+    // } else {
+    // return "is" + name1;
+    // }
+    // }
 
     public void setName(final String name) {
         this.name = name;

@@ -402,8 +402,9 @@ public class BeanFactoryGenerator {
             value.append(prop.getValue());
         }
         if (prop.isUseSetter()) {
-            source.append("    " + bean.getId() + "->" + prop.getSetterName()
-                    + "(" + value + ");\n");
+            source.append("    " + bean.getId() + "->"
+                    + BeanUtils.getPropertySetterName(prop.getName()) + "("
+                    + value + ");\n");
         } else {
             source.append("    " + bean.getId() + "->" + prop.getName() + " = "
                     + value + ";\n");
