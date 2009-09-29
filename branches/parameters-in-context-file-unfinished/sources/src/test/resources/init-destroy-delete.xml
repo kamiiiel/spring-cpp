@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-use-setter="false" default-managed="false">
+  
+  <bean id="myComp1" class="MyComponent1" init-method="myMethod" />
+
+  <bean id="myComp2" class="MyComponent2" managed="true" />
+
+  <bean id="myComp3" class="MyComponent3" lazy-init="false" />
+
+  <bean id="myComp4" class="MyComponent4" destroy-method="destroy" />
+
+  <bean id="myComp5" class="MyComponent5" delete-method="deleteMethod" managed="true"/>
+
+  <bean id="myComp6" class="MyComponent6" factory-method="factoryMethod">
+    <constructor-arg ref="myComp1" />
+  </bean>
+
+  <bean id="myComp7" class="MyComponent7" factory-method="factoryMethod" factory-bean="myComp6">
+    <constructor-arg ref="myComp1" />
+  </bean>
+  
+  
+</beans>
