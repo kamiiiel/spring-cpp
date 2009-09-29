@@ -1,0 +1,15 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.googlecode.wmlynar.springcpp</groupId>
+    <artifactId>super</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>sources</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Spring-Cpp Sources</name>
+  <packaging>pom</packaging>
+  <modules>
+    <module>spring-cpp</module>
+  </modules>
+</project>

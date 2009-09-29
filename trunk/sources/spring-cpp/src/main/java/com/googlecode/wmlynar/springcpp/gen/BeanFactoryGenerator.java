@@ -1,0 +1,360 @@
+package com.googlecode.wmlynar.springcpp.gen;
+
+import com.googlecode.wmlynar.springcpp.domain.Bean;
+import com.googlecode.wmlynar.springcpp.domain.BeansDefinition;
+import com.googlecode.wmlynar.springcpp.domain.ConstructorArg;
+import com.googlecode.wmlynar.springcpp.domain.GeneratedClass;
+import com.googlecode.wmlynar.springcpp.domain.Property;
+
+/**
+ * Generates source code of the bean factory.
+ * 
+ * @author Wojciech Mlynarczyk (wmlynar@gmail.com)
+ * 
+ */
+public class BeanFactoryGenerator {
+
+    /**
+     * C++ namespace of the generated class.
+     */
+    private String namespace;
+
+    /**
+     * Name of the generated class
+     */
+    private String className;
+
+    /**
+     * Definitions of all the beans
+     */
+    private BeansDefinition definition;
+
+    /**
+     * Generates c++ source code of the bean factory.
+     * 
+     * @param definition
+     *            Definition of the beans, as read form the context file.
+     * @param namespace
+     *            C++ namespace of the bean factory class.
+     * @param className
+     *            Name of the bean factory class.
+     * @return
+     */
+    public GeneratedClass generate(final BeansDefinition definition,
+            final String namespace, final String className) {
+
+        // prepare variables
+        this.definition = definition;
+        this.namespace = namespace;
+        this.className = className;
+
+        // generate stuff
+        final String header = generateHeader();
+        final String source = generateSource();
+
+        // save result
+        final GeneratedClass gc = new GeneratedClass();
+        gc.setHeaderContent(header);
+        gc.setSourceContent(source);
+        gc.setClassName(className);
+
+        return gc;
+    }
+
+    /**
+     * Generates the source code for the header file (*.h).
+     * 
+     * @return Generated source code of the header.
+     */
+    private String generateHeader() {
+
+        final StringBuilder header = new StringBuilder();
+
+        // Compute the guard name for the ifndef
+        String guard;
+        if (namespace != null) {
+            guard = namespace + "_" + className;
+        } else {
+            guard = className;
+        }
+        guard = "_" + guard.toUpperCase() + "_H_";
+
+        // add guard
+        header.append("#ifndef " + guard + "\n");
+        header.append("#define " + guard + "\n");
+
+        // add all includes
+        for (final String include : definition.getIncludeList()) {
+            header.append("#include \"" + include + "\"\n");
+        }
+
+        // add namespace
+        if (namespace != null) {
+            header.append("namespace " + namespace + " {\n");
+        }
+
+        // declare class, constructor and standard methods
+        header.append("class " + className + " {\n");
+        header.append("public:\n");
+        header.append("  " + className + "();\n");
+        header.append("  virtual void* getBean(char* name);\n");
+        header.append("  virtual void start();\n");
+        header.append("  virtual void stop();\n");
+        header.append("  virtual ~" + className + "();\n");
+
+        // for all beans generate accessors
+        for (final Bean bean : definition.getBeanList()) {
+            header.append("  ");
+            header.append(bean.getClazz());
+            header.append("* ");
+            header.append(bean.getGetterName());
+            header.append("();\n");
+        }
+
+        header.append("protected:\n");
+
+        // for all beans generate attributes
+
+        for (final Bean bean : definition.getBeanList()) {
+            header.append("  ");
+            header.append(bean.getClazz());
+            header.append("* ");
+            header.append(bean.getId());
+            header.append(";\n");
+        }
+
+        // close declaration of the class and namespace
+        header.append("};\n");
+        if (namespace != null) {
+            header.append("};\n");
+        }
+
+        // close the guarding ifndef
+        header.append("#endif // ");
+        header.append(guard);
+        header.append("\n\n");
+
+        return header.toString();
+    }
+
+    /**
+     * Generates the source file *.cpp of the bean factory.
+     * 
+     * @return Generated source of the bean factory.
+     */
+    private String generateSource() {
+
+        final StringBuilder source = new StringBuilder();
+
+        // add includes
+        source.append("#include <string.h>\n");
+        source.append("#include \"" + className + ".h\"\n\n");
+
+        // implementation of constructor
+        source.append(generateConstructor());
+
+        // implementation of getbean
+        source.append(generateGetBean());
+
+        // not yet implemented
+        source.append(generateStartStop());
+
+        // deletes beans depending on managed properties
+        source.append(generateDestructor());
+
+        // generate getters
+        for (final Bean bean : definition.getBeanList()) {
+            source.append(generateGetter(bean));
+        }
+
+        return source.toString();
+    }
+
+    /**
+     * Generates body of constructor.
+     * 
+     * @return String containing body of constructor.
+     */
+    private String generateConstructor() {
+        final StringBuilder source = new StringBuilder();
+
+        source.append(className + "::" + className + "()\n{\n");
+
+        // initialize pointers to all beans
+        for (final Bean bean : definition.getBeanList()) {
+            source.append("  " + bean.getId() + " = 0;\n");
+        }
+        source.append("}\n\n");
+
+        return source.toString();
+    }
+
+    /**
+     * Generates body of the getBean function.
+     * 
+     * @return String containing body of the getBean function.
+     */
+    private String generateGetBean() {
+        final StringBuilder source = new StringBuilder();
+
+        source.append("void *" + className + "::getBean(char *name)\n{\n");
+        // for all beans generate accessors
+        for (final Bean bean : definition.getBeanList()) {
+            source.append("  if(strcmp(\"" + bean.getId() + "\",name)) return "
+                    + bean.getGetterName() + "();\n");
+        }
+        source.append("  return 0;\n");
+        source.append("}\n\n");
+
+        return source.toString();
+    }
+
+    /**
+     * Generates body of start function, stop function and destructor. Not
+     * implemented yet.
+     * 
+     * @return String containing body of start,stop and destructor.
+     */
+    private String generateStartStop() {
+        final StringBuilder source = new StringBuilder();
+
+        source.append("void " + className + "::start()\n{\n");
+        source.append("}\n\n");
+        source.append("void " + className + "::stop()\n{\n");
+        source.append("}\n\n");
+
+        return source.toString();
+    }
+
+    /**
+     * Generates destructor method deleting beans depending on managed property.
+     * 
+     * @return
+     */
+    private String generateDestructor() {
+        final StringBuilder source = new StringBuilder();
+
+        source.append("" + className + "::~" + className + "()\n{\n");
+        for (final Bean bean : definition.getBeanList()) {
+            if (bean.isManaged()) {
+                source.append("  if(" + bean.getId() + ") ");
+                source.append(definition.getDeleteOperator());
+                source.append(" " + bean.getId() + ";\n");
+            } else {
+                source.append("  // ignored " + bean.getId() + "\n");
+            }
+        }
+        source.append("}\n\n");
+
+        return source.toString();
+    }
+
+    /**
+     * Generates a getXXX function for given bean. The name of the function
+     * depends on id of the bean.
+     * 
+     * @param bean
+     *            Bean for which to generate the getter code.
+     * 
+     * @return Source code of the getter function.
+     */
+    private String generateGetter(final Bean bean) {
+        final StringBuilder source = new StringBuilder();
+
+        source.append(bean.getClazz() + "* " + className + "::"
+                + bean.getGetterName() + "()\n{\n");
+        source.append("  if(!" + bean.getId() + ") {\n");
+        source.append("    " + bean.getId() + " = ");
+        source.append(generateConstructor(bean));
+        source.append(";\n");
+        for (final Property p : bean.getProperties()) {
+            generateSetProperty(source, bean, p);
+        }
+        source.append("  }\n");
+        source.append("  return " + bean.getId() + ";\n");
+        source.append("}\n\n");
+
+        return source.toString();
+    }
+
+    /**
+     * Generates constructor for given bean. The parameters of the constructor
+     * are generated using bean definition. Used from getXXX function.
+     * 
+     * @param bean
+     *            Bean for which to generate the constructor.
+     * 
+     * @return Source code of the constructor.
+     */
+    private String generateConstructor(final Bean bean) {
+        final StringBuilder source = new StringBuilder();
+
+        source.append(definition.getNewOperator());
+        source.append(" " + bean.getClazz() + "(");
+
+        final int len = bean.getConstructorArgs().size();
+        for (int i = 0; i < len; i++) {
+            final ConstructorArg arg = bean.getConstructorArgs().get(i);
+            if (arg.getRef() != null) {
+                final Bean otherBean = definition.findBeanById(arg.getRef());
+                if (otherBean == null) {
+                    throw new RuntimeException(
+                            "Cannot find bean in constructor-arg ref="
+                                    + arg.getRef());
+                }
+                source.append(otherBean.getGetterName());
+                source.append("()");
+            } else if (arg.isText()) {
+                source.append("\"");
+                source.append(arg.getValue());
+                source.append("\"");
+            } else {
+                source.append(arg.getValue());
+            }
+            if (i != len - 1) {
+                source.append(",");
+            }
+        }
+        source.append(")");
+        return source.toString();
+    }
+
+    /**
+     * Generates the set property code of the property of the given bean based
+     * on beans definition. Used from getXXX function.
+     * 
+     * @param source
+     *            String builder to which to append generated code.
+     * @param bean
+     *            Bean for which to generate the setter.
+     * @param prop
+     *            Property for which to generate the setter.
+     */
+    private void generateSetProperty(final StringBuilder source,
+            final Bean bean, final Property prop) {
+        final StringBuilder value = new StringBuilder();
+        if (prop.isText()) {
+            value.append("\"");
+            value.append(prop.getValue());
+            value.append("\"");
+        } else if (prop.getRef() != null) {
+            final Bean otherBean = definition.findBeanById(prop.getRef());
+            if (otherBean == null) {
+                throw new RuntimeException("Cannot find bean property name ="
+                        + prop.getName() + " ref=" + prop.getRef());
+            }
+            value.append(otherBean.getGetterName());
+            value.append("()");
+        } else {
+            value.append(prop.getValue());
+        }
+        if (prop.isUseSetter()) {
+            source.append("    " + bean.getId() + "->" + prop.getSetterName()
+                    + "(" + value + ");\n");
+        } else {
+            source.append("    " + bean.getId() + "->" + prop.getName() + " = "
+                    + value + ";\n");
+        }
+    }
+
+}

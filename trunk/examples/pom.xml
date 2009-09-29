@@ -1,0 +1,16 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.googlecode.wmlynar.springcpp</groupId>
+    <artifactId>super</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>examples</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Spring-Cpp Examples</name>
+  <packaging>pom</packaging>
+  <modules>
+    <module>hello-world</module>
+    <module>weather-information</module>
+  </modules>
+</project>
