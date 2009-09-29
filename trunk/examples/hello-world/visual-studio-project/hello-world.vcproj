@@ -211,7 +211,7 @@
 			Name="Configuration"
 			>
 			<File
-				RelativePath="..\app-context.xml"
+				RelativePath="..\src\app-context.xml"
 				>
 			</File>
 		</Filter>

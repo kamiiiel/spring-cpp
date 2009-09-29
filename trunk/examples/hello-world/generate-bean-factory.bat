@@ -1,2 +1,2 @@
-java -jar ../../bin/spring-cpp.jar --className BeanFactory --outputDir src --contextFile app-context.xml
+java -jar ../../bin/spring-cpp.jar --className BeanFactory --outputDir src --contextFile src/app-context.xml
 
