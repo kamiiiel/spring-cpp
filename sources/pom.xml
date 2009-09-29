@@ -2,14 +2,174 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.googlecode.wmlynar.springcpp</groupId>
-    <artifactId>super</artifactId>
+    <artifactId>sources</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>sources</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>Spring-Cpp Sources</name>
-  <packaging>pom</packaging>
-  <modules>
-    <module>spring-cpp</module>
-  </modules>
+  <artifactId>spring-cpp</artifactId>
+  <packaging>jar</packaging>
+  <name>Spring-Cpp Bean Factory Generator</name>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/preprocess</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.java</include>
+        </includes>
+        <targetPath>../../src/main/java</targetPath>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+               <addClasspath>true</addClasspath>
+              <mainClass>com.googlecode.wmlynar.springcpp.SpringCpp</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+<!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+          <configuration>
+            comment
+              <descriptors>
+              <descriptor>src/main/assembly/descriptor.xml</descriptor>
+              </descriptors>
+            comment end
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+            <archive>
+              <manifest>
+                <mainClass>com.googlecode.wmlynar.springcpp.SpringCpp
+                </mainClass>
+                <addClasspath>true</addClasspath>
+              </manifest>
+            </archive>
+            <finalName>spring-cpp</finalName>
+            <appendAssemblyId>false</appendAssemblyId>
+            <outputDirectory>../../bin</outputDirectory>
+          </configuration>
+        </executions>
+      </plugin>
+ -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>integration-test</phase>
+            <configuration>
+              <tasks>
+              	<copy file="target/${artifactId}-${version}.jar"
+                  tofile="../../bin/${artifactId}.jar" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>exe</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.akathist.maven.plugins.launch4j</groupId>
+            <artifactId>launch4j-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>l4j-generate-exe</id>
+                <phase>pre-integration-test</phase>
+                <goals><goal>launch4j</goal></goals>
+                <configuration>
+                  <headerType>console</headerType>
+                  <!-- <jar>target/xxx-1.0.jar</jar>  -->
+                  <outfile>target/${artifactId}-${version}.exe</outfile>
+                  <dontWrapJar>false</dontWrapJar>
+                  <errTitle>spring-cpp</errTitle>
+                  <classPath>
+                    <mainClass>com.googlecode.wmlynar.springcpp.SpringCpp</mainClass>
+                    <addDependencies>false</addDependencies>
+                    <preCp>anything</preCp>
+                  </classPath>
+                  <jre>
+                    <minVersion>1.5.0</minVersion>
+                  </jre>
+                  <versionInfo>
+                    <fileVersion>0.0.0.0</fileVersion>
+                    <txtFileVersion>${version}</txtFileVersion>
+                    <fileDescription>spring-cpp dependency injection framework</fileDescription>
+                    <copyright>Wojciech Mlynarczyk (wmlynar@gmail.com), ...</copyright>
+                    <productVersion>0.0.0.0</productVersion>
+                    <txtProductVersion>${version}</txtProductVersion>
+                    <productName>${artifactId}</productName>
+                    <internalName>${artifactId}</internalName>
+                    <originalFilename>${artifactId}.exe</originalFilename>
+                  </versionInfo>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>integration-test</phase>
+                <configuration>
+                  <tasks>
+                    <copy file="target/${artifactId}-${version}.jar"
+                      tofile="../../bin/${artifactId}.jar" />
+                    <copy file="target/${artifactId}-${version}.exe"
+                      tofile="../../bin/${artifactId}.exe" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <repositories>
+        <repository>
+          <id>akathist-repository</id>
+          <name>Akathist Repository</name>
+          <url>http://www.9stmaryrd.com/maven</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>akathist-repository</id>
+          <name>Akathist Repository</name>
+          <url>http://www.9stmaryrd.com/maven</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
 </project>
