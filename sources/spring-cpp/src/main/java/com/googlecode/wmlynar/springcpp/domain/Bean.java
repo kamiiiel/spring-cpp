@@ -18,6 +18,13 @@ public class Bean {
 
     private boolean useSetter = true;
     private boolean managed = true;
+    private boolean lazyInit = true;
+
+    private String initMethod = null;
+    private String destoryMethod = null;
+    private String factoryMethod = null;
+    private String factoryBean = null;
+    private String deleteMethod = null;
 
     public String getGetterName() {
         final String clazz1 = id.substring(0, 1).toUpperCase()
@@ -80,5 +87,53 @@ public class Bean {
 
     public boolean isManaged() {
         return managed;
+    }
+
+    public void setLazyInit(final boolean lazyInit) {
+        this.lazyInit = lazyInit;
+    }
+
+    public boolean isLazyInit() {
+        return lazyInit;
+    }
+
+    public void setInitMethod(final String initMethod) {
+        this.initMethod = initMethod;
+    }
+
+    public String getInitMethod() {
+        return initMethod;
+    }
+
+    public void setDestoryMethod(final String destoryMethod) {
+        this.destoryMethod = destoryMethod;
+    }
+
+    public String getDestoryMethod() {
+        return destoryMethod;
+    }
+
+    public void setFactoryMethod(final String factoryMethod) {
+        this.factoryMethod = factoryMethod;
+    }
+
+    public String getFactoryMethod() {
+        return factoryMethod;
+    }
+
+    public void setDeleteMethod(final String deleteMethod) {
+        this.deleteMethod = deleteMethod;
+    }
+
+    public String getDeleteMethod() {
+        return deleteMethod;
+    }
+
+    public void setFactoryBean(final String factoryBean) {
+        this.factoryBean = factoryBean;
+    }
+
+    public String getFactoryBean() {
+        return factoryBean;
     }
 }

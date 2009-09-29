@@ -18,6 +18,7 @@ public class BeansDefinition {
     private String newOperator = "new";
     private String deleteOperator = "delete";
     private String defaultIncludeExtension = null;
+    private boolean defaultLazyInit = true;
 
     public void setBeanList(final ArrayList<Bean> beanList) {
         this.beanList = beanList;
@@ -82,5 +83,13 @@ public class BeansDefinition {
 
     public String getDefaultIncludeExtension() {
         return defaultIncludeExtension;
+    }
+
+    public void setDefaultLazyInit(boolean defaultLazyInit) {
+        this.defaultLazyInit = defaultLazyInit;
+    }
+
+    public boolean isDefaultLazyInit() {
+        return defaultLazyInit;
     }
 }

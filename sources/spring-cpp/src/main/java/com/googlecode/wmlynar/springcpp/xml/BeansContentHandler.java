@@ -66,6 +66,10 @@ public class BeansContentHandler extends DefaultHandler {
                         .getLocalName(i))) {
                     beansDefinition
                             .setDefaultIncludeExtension(atts.getValue(i));
+                } else if ("default-lazy-init".equalsIgnoreCase(atts
+                        .getLocalName(i))) {
+                    beansDefinition.setDefaultLazyInit("true"
+                            .equalsIgnoreCase(atts.getValue(i)));
                 }
             }
         } else if ("bean".equalsIgnoreCase(localName)) {
@@ -76,6 +80,7 @@ public class BeansContentHandler extends DefaultHandler {
             bean = new Bean();
             bean.setUseSetter(beansDefinition.isDefaultUseSetter());
             bean.setManaged(beansDefinition.isDefaultManaged());
+            bean.setLazyInit(beansDefinition.isDefaultLazyInit());
             beanList.add(bean);
             boolean skipInclude = false;
             for (int i = 0; i < atts.getLength(); i++) {
@@ -83,7 +88,8 @@ public class BeansContentHandler extends DefaultHandler {
                     bean.setId(atts.getValue(i));
                 } else if ("class".equalsIgnoreCase(atts.getLocalName(i))) {
                     bean.setClazz(atts.getValue(i));
-                } else if ("includeFile".equalsIgnoreCase(atts.getLocalName(i))) {
+                } else if ("include-file"
+                        .equalsIgnoreCase(atts.getLocalName(i))) {
                     if (!"".equals(atts.getValue(i).trim())) {
                         includeList.add(atts.getValue(i));
                     }
@@ -92,9 +98,30 @@ public class BeansContentHandler extends DefaultHandler {
                     final boolean useSetter = "true".equalsIgnoreCase(atts
                             .getValue(i));
                     bean.setUseSetter(useSetter);
-                } else if ("noIncludeFile".equalsIgnoreCase(atts
+                } else if ("managed".equalsIgnoreCase(atts.getLocalName(i))) {
+                    bean.setManaged("true".equalsIgnoreCase(atts.getValue(i)));
+                } else if ("no-include-file".equalsIgnoreCase(atts
                         .getLocalName(i))) {
                     skipInclude = "true".equalsIgnoreCase(atts.getValue(i));
+                } else if ("lazy-init".equalsIgnoreCase(atts.getLocalName(i))) {
+                    bean.setLazyInit("true".equalsIgnoreCase(atts.getValue(i)));
+                } else if ("init-method".equalsIgnoreCase(atts.getLocalName(i))) {
+                    bean.setInitMethod(atts.getValue(i));
+                } else if ("destroy-method".equalsIgnoreCase(atts
+                        .getLocalName(i))) {
+                    bean.setDestoryMethod(atts.getValue(i));
+                } else if ("factory-method".equalsIgnoreCase(atts
+                        .getLocalName(i))) {
+                    bean.setFactoryMethod(atts.getValue(i));
+                } else if ("factory-bean"
+                        .equalsIgnoreCase(atts.getLocalName(i))) {
+                    bean.setFactoryBean(atts.getValue(i));
+                } else if ("delete-method".equalsIgnoreCase(atts
+                        .getLocalName(i))) {
+                    bean.setDeleteMethod(atts.getValue(i));
+                } else {
+                    throw new SAXException("unknown atribuite "
+                            + atts.getLocalName(i));
                 }
             }
             if (bean.getId() == null) {
@@ -114,7 +141,7 @@ public class BeansContentHandler extends DefaultHandler {
                 includeList.add(bean.getClazz()
                         + beansDefinition.getDefaultIncludeExtension());
             }
-        } else if ("additionalIncludeFile".equalsIgnoreCase(localName)) {
+        } else if ("additional-include-file".equalsIgnoreCase(localName)) {
             if (itemType != ITEM_TYPE.ITEM_BEANS) {
                 throw new SAXException("unexpected tag additionalIncludeFile");
             }

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
   
-  <bean id="displayWeather" class="DisplayWeather" includeFile="DisplayWeather.h">
+  <bean id="displayWeather" class="DisplayWeather" include-file="DisplayWeather.h">
     <property name="weatherService" ref="myRemoteWeatherService" use-setter="false" />
   </bean>
   
-  <bean id="myLocalWeatherService" class="LocalWeatherService" includeFile="LocalWeatherService.h">
+  <bean id="myLocalWeatherService" class="LocalWeatherService" include-file="LocalWeatherService.h">
   </bean>
   
-  <bean id="myRemoteWeatherService" class="RemoteWeatherService" includeFile="RemoteWeatherService.h">
+  <bean id="myRemoteWeatherService" class="RemoteWeatherService" include-file="RemoteWeatherService.h">
     <property name="internetClient" ref="myInternetClient" />
     <property name="hostname" value="http://my.hostname.com/" text="true"/>
   </bean>
   
-  <bean id="myInternetClient" class="InternetClient" includeFile="InternetClient.h">
+  <bean id="myInternetClient" class="InternetClient" include-file="InternetClient.h">
     <property name="numThreads" value="3" />
   </bean>
   
