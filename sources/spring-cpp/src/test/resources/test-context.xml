@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+  
+  <additionalIncludeFile name="someFile.h" /> 
+
+  <bean id="myComp1" class="MyComponent1" includeFile="mycomponent1.h">
+    <property name="myComp2" ref="myComp2" />
+  </bean>
+  
+  <bean id="myComp2" class="MyComponent2" includeFile="mycomponent2.h">
+    <property name="text" value="mytext" text="true" />
+    <property name="int" value="10" />
+    <constructor-arg value="0" />
+    <constructor-arg value="true" />
+  </bean>
+  
+  <bean id="myComp3" class="MyComponent3" includeFile="mycomponent3.h">
+    <constructor-arg ref="myComp1" />
+  </bean>
+
+  <bean id="myComponent4" class="MyComponent4" includeFile="mycomponent4.h">
+    <extension name="aaa" ref="myComp1" />
+    <extension name="aaa" ref="myComp2" />
+    <extension name="aaa" ref="myComp3" />
+  </bean>
+  
+</beans>
