@@ -13,7 +13,6 @@ _It only generates some new code based on XML file_
  * You do not have to use any special language costructs like templates for example
  * It works for every platform, generated code is very plain and should be configurable
  * Generator itself is written in java so it works on every platform where java is available
- * Java can be easily compiled into executable using GCJ
  * It is open, so if something does not work as you like, you can change it!
 
 
