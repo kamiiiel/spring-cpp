@@ -26,12 +26,6 @@ public class Bean {
     private String factoryBean = null;
     private String deleteMethod = null;
 
-    public String getGetterName() {
-        final String clazz1 = id.substring(0, 1).toUpperCase()
-                + id.substring(1);
-        return "get" + clazz1;
-    }
-
     public void setId(final String id) {
         this.id = id;
     }

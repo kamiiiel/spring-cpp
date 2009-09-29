@@ -5,6 +5,7 @@ import com.googlecode.wmlynar.springcpp.domain.BeansDefinition;
 import com.googlecode.wmlynar.springcpp.domain.ConstructorArg;
 import com.googlecode.wmlynar.springcpp.domain.GeneratedClass;
 import com.googlecode.wmlynar.springcpp.domain.Property;
+import com.googlecode.wmlynar.springcpp.util.BeanUtils;
 
 /**
  * Generates source code of the bean factory.
@@ -30,6 +31,13 @@ public class BeanFactoryGenerator {
     private BeansDefinition definition;
 
     /**
+     * When true application should fail on error, for example bean id is not
+     * found in ref="xxx". If false it will just generate wrong code - sometimes
+     * it might be easier to track the problem in the generated code.
+     */
+    private boolean failOnError = true;
+
+    /**
      * Generates c++ source code of the bean factory.
      * 
      * @param definition
@@ -47,6 +55,7 @@ public class BeanFactoryGenerator {
         this.definition = definition;
         this.namespace = namespace;
         this.className = className;
+        this.failOnError = definition.isFailOnError();
 
         // generate stuff
         final String header = generateHeader();
@@ -107,7 +116,7 @@ public class BeanFactoryGenerator {
             header.append("  ");
             header.append(bean.getClazz());
             header.append("* ");
-            header.append(bean.getGetterName());
+            header.append(BeanUtils.getBeanGetterName(bean.getId()));
             header.append("();\n");
         }
 
@@ -201,7 +210,7 @@ public class BeanFactoryGenerator {
         // for all beans generate accessors
         for (final Bean bean : definition.getBeanList()) {
             source.append("  if(strcmp(\"" + bean.getId() + "\",name)) return "
-                    + bean.getGetterName() + "();\n");
+                    + BeanUtils.getBeanGetterName(bean.getId()) + "();\n");
         }
         source.append("  return 0;\n");
         source.append("}\n\n");
@@ -224,7 +233,8 @@ public class BeanFactoryGenerator {
             if (bean.isLazyInit()) {
                 source.append("  // ignored starting " + bean.getId() + "\n");
             } else {
-                source.append("  " + bean.getGetterName() + "();\n");
+                source.append("  " + BeanUtils.getBeanGetterName(bean.getId())
+                        + "();\n");
             }
         }
         source.append("}\n\n");
@@ -286,7 +296,7 @@ public class BeanFactoryGenerator {
         final StringBuilder source = new StringBuilder();
 
         source.append(bean.getClazz() + "* " + className + "::"
-                + bean.getGetterName() + "()\n{\n");
+                + BeanUtils.getBeanGetterName(bean.getId()) + "()\n{\n");
         source.append("  if(!" + bean.getId() + ") {\n");
         source.append("    " + bean.getId() + " = ");
         source.append(generateConstructor(bean));
@@ -322,13 +332,14 @@ public class BeanFactoryGenerator {
             source.append(" " + bean.getClazz() + "(");
         } else {
             if (bean.getFactoryBean() != null) {
-                final Bean factoryBean = definition.findBeanById(bean
-                        .getFactoryBean());
-                if (factoryBean == null) {
+                if (failOnError
+                        && definition.findBeanById(bean.getFactoryBean()) == null) {
                     throw new RuntimeException("Cannot find factory bean "
                             + bean.getFactoryBean());
                 }
-                source.append(factoryBean.getGetterName() + "()->");
+                source.append(BeanUtils
+                        .getBeanGetterName(bean.getFactoryBean()));
+                source.append("()->");
             } else {
                 source.append(bean.getClazz() + "::");
             }
@@ -339,13 +350,13 @@ public class BeanFactoryGenerator {
         for (int i = 0; i < len; i++) {
             final ConstructorArg arg = bean.getConstructorArgs().get(i);
             if (arg.getRef() != null) {
-                final Bean otherBean = definition.findBeanById(arg.getRef());
-                if (otherBean == null) {
+                if (failOnError
+                        && definition.findBeanById(arg.getRef()) == null) {
                     throw new RuntimeException(
                             "Cannot find bean in constructor-arg ref="
                                     + arg.getRef());
                 }
-                source.append(otherBean.getGetterName());
+                source.append(BeanUtils.getBeanGetterName(arg.getRef()));
                 source.append("()");
             } else if (arg.isText()) {
                 source.append("\"");
@@ -381,12 +392,11 @@ public class BeanFactoryGenerator {
             value.append(prop.getValue());
             value.append("\"");
         } else if (prop.getRef() != null) {
-            final Bean otherBean = definition.findBeanById(prop.getRef());
-            if (otherBean == null) {
+            if (failOnError && definition.findBeanById(prop.getRef()) == null) {
                 throw new RuntimeException("Cannot find bean property name ="
                         + prop.getName() + " ref=" + prop.getRef());
             }
-            value.append(otherBean.getGetterName());
+            value.append(BeanUtils.getBeanGetterName(prop.getRef()));
             value.append("()");
         } else {
             value.append(prop.getValue());

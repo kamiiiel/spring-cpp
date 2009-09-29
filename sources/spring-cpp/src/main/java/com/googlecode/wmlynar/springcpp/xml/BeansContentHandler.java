@@ -70,6 +70,10 @@ public class BeansContentHandler extends DefaultHandler {
                         .getLocalName(i))) {
                     beansDefinition.setDefaultLazyInit("true"
                             .equalsIgnoreCase(atts.getValue(i)));
+                } else if ("fail-on-error".equalsIgnoreCase(atts
+                        .getLocalName(i))) {
+                    beansDefinition.setFailOnError("true".equalsIgnoreCase(atts
+                            .getValue(i)));
                 }
             }
         } else if ("bean".equalsIgnoreCase(localName)) {
