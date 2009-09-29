@@ -20,10 +20,18 @@ void *test::getBean(char *name)
 
 void test::start()
 {
+  // ignored starting myComp1
+  // ignored starting myComp2
+  // ignored starting myComp3
+  // ignored starting myComponent4
 }
 
 void test::stop()
 {
+  // ignored stopping myComp1
+  // ignored stopping myComp2
+  // ignored stopping myComp3
+  // ignored stopping myComponent4
 }
 
 test::~test()

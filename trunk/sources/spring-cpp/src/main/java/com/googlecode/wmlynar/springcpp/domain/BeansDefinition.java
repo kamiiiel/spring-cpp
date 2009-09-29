@@ -19,6 +19,7 @@ public class BeansDefinition {
     private String deleteOperator = "delete";
     private String defaultIncludeExtension = null;
     private boolean defaultLazyInit = true;
+    private boolean failOnError = true;
 
     public void setBeanList(final ArrayList<Bean> beanList) {
         this.beanList = beanList;
@@ -85,11 +86,19 @@ public class BeansDefinition {
         return defaultIncludeExtension;
     }
 
-    public void setDefaultLazyInit(boolean defaultLazyInit) {
+    public void setDefaultLazyInit(final boolean defaultLazyInit) {
         this.defaultLazyInit = defaultLazyInit;
     }
 
     public boolean isDefaultLazyInit() {
         return defaultLazyInit;
+    }
+
+    public void setFailOnError(final boolean failOnError) {
+        this.failOnError = failOnError;
+    }
+
+    public boolean isFailOnError() {
+        return failOnError;
     }
 }
