@@ -180,7 +180,7 @@ public class BeanFactoryGenerator {
     }
 
     /**
-     * Generates body of constructor.
+     * Generates body of constructor, initializes all properties to null values.
      * 
      * @return String containing body of constructor.
      */
@@ -219,10 +219,11 @@ public class BeanFactoryGenerator {
     }
 
     /**
-     * Generates body of start function, stop function and destructor. Not
-     * implemented yet.
+     * Generates body of start function and stop function. Checks for each bean
+     * if it contains lazy-init parameters set to false and if it has
+     * destroy-method defined.
      * 
-     * @return String containing body of start,stop and destructor.
+     * @return String containing body of start and stop functions.
      */
     private String generateStartStop() {
         final StringBuilder source = new StringBuilder();
@@ -257,8 +258,11 @@ public class BeanFactoryGenerator {
 
     /**
      * Generates destructor method deleting beans depending on managed property.
+     * If particular bean has delete-method defined that it is used instead of
+     * delete operator. Delete operator is defined as an atribute of beans tag
+     * in context file.
      * 
-     * @return
+     * @return Body of the destructor.
      */
     private String generateDestructor() {
         final StringBuilder source = new StringBuilder();
@@ -317,7 +321,11 @@ public class BeanFactoryGenerator {
 
     /**
      * Generates constructor for given bean. The parameters of the constructor
-     * are generated using bean definition. Used from getXXX function.
+     * are generated using bean definition. Used from getXXX function. If
+     * factory-method attribute is defined it is used instead of new operator.
+     * If factory-bean is defined than than bean is the object on which the
+     * factory method is called, otherwise factory method is assumed to be a
+     * static method.
      * 
      * @param bean
      *            Bean for which to generate the constructor.

@@ -4,6 +4,9 @@
 package com.googlecode.wmlynar.springcpp.util;
 
 /**
+ * Utilities for computing the names of bean' and properties' getters and
+ * setters.
+ * 
  * @author Wojciech Mlynarczyk (wmlynar@gmail.com)
  * 
  */
