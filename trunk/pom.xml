@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.googlecode.wmlynar.springcpp</groupId>
   <artifactId>super</artifactId>
-  <version>0.1</version>
+  <version>0.1.1-SNAPSHOT</version>
   <name>Spring-Cpp Super</name>
   <packaging>pom</packaging>
   <url>http://code.google.com/p/spring-cpp</url>
