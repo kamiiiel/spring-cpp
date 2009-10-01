@@ -1,4 +1,5 @@
 #summary Advantages of using springframework-cpp.
+#labels Featured
 
 = Why Would You Choose This Framework =
 
